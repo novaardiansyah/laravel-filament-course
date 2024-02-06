@@ -27,7 +27,13 @@ class DepartmentResource extends Resource
   {
     return $form
       ->schema([
-        //
+        Forms\Components\Section::make('Department')
+          ->description('Please enter the department for your employee.')
+          ->schema([
+            Forms\Components\TextInput::make('name')
+              ->required()
+              ->maxLength(255),
+          ])
       ]);
   }
 
@@ -35,14 +41,16 @@ class DepartmentResource extends Resource
   {
     return $table
       ->columns([
+        Tables\Columns\TextColumn::make('name')
+          ->sortable(),
         Tables\Columns\TextColumn::make('created_at')
           ->dateTime()
           ->sortable()
-          ->toggleable(isToggledHiddenByDefault: true),
+          ->toggleable(isToggledHiddenByDefault: false),
         Tables\Columns\TextColumn::make('updated_at')
           ->dateTime()
           ->sortable()
-          ->toggleable(isToggledHiddenByDefault: true),
+          ->toggleable(isToggledHiddenByDefault: false),
       ])
       ->filters([
         //

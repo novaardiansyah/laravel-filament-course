@@ -74,8 +74,12 @@ class EmployeeResource extends Resource
         Forms\Components\Section::make('Dates')
           ->schema([
             Forms\Components\DatePicker::make('date_of_birth')
+              ->displayFormat('Y/m/d')
+              ->native(false)
               ->required(),
             Forms\Components\DatePicker::make('date_of_hired')
+              ->displayFormat('Y/m/d')
+              ->native(false)
               ->required(),
           ])->columns(2)
       ]);
