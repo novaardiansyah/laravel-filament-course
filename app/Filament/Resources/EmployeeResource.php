@@ -10,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -89,39 +90,44 @@ class EmployeeResource extends Resource
   {
     return $table
       ->columns([
-        Tables\Columns\TextColumn::make('country_id')
-          ->numeric()
+        TextColumn::make('first_name')
+          ->searchable(),
+        TextColumn::make('last_name')
+          ->searchable(),
+        TextColumn::make('middle_name')
+          ->searchable()
+          ->toggleable(isToggledHiddenByDefault: true),
+        TextColumn::make('department.name')
+          ->searchable()
           ->sortable(),
-        Tables\Columns\TextColumn::make('state_id')
-          ->numeric()
-          ->sortable(),
-        Tables\Columns\TextColumn::make('city_id')
-          ->numeric()
-          ->sortable(),
-        Tables\Columns\TextColumn::make('department_id')
-          ->numeric()
-          ->sortable(),
-        Tables\Columns\TextColumn::make('first_name')
+        TextColumn::make('zip_code')
           ->searchable(),
-        Tables\Columns\TextColumn::make('last_name')
-          ->searchable(),
-        Tables\Columns\TextColumn::make('middle_name')
-          ->searchable(),
-        Tables\Columns\TextColumn::make('address')
-          ->searchable(),
-        Tables\Columns\TextColumn::make('zip_code')
-          ->searchable(),
-        Tables\Columns\TextColumn::make('date_of_birth')
+        TextColumn::make('city.name')
+          ->searchable()
+          ->sortable()
+          ->toggleable(isToggledHiddenByDefault: false),
+        TextColumn::make('state.name')
+          ->searchable()
+          ->sortable()
+          ->toggleable(isToggledHiddenByDefault: true),
+        TextColumn::make('country.name')
+          ->searchable()
+          ->sortable()
+          ->toggleable(isToggledHiddenByDefault: true),
+        TextColumn::make('address')
+          ->searchable()
+          ->toggleable(isToggledHiddenByDefault: true),
+        TextColumn::make('date_of_birth')
           ->date()
           ->sortable(),
-        Tables\Columns\TextColumn::make('date_of_hired')
+        TextColumn::make('date_of_hired')
           ->date()
           ->sortable(),
-        Tables\Columns\TextColumn::make('created_at')
+        TextColumn::make('created_at')
           ->dateTime()
           ->sortable()
           ->toggleable(isToggledHiddenByDefault: true),
-        Tables\Columns\TextColumn::make('updated_at')
+        TextColumn::make('updated_at')
           ->dateTime()
           ->sortable()
           ->toggleable(isToggledHiddenByDefault: true),

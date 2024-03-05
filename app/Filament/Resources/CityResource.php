@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -42,20 +43,22 @@ class CityResource extends Resource
   {
     return $table
       ->columns([
-        Tables\Columns\TextColumn::make('state_id')
-          ->numeric()
-          ->sortable(),
-        Tables\Columns\TextColumn::make('name')
+        TextColumn::make('name')
+          ->label('City Name')
           ->searchable(),
-        Tables\Columns\TextColumn::make('created_at')
+        TextColumn::make('state.name')
+          ->searchable()
+          ->sortable(),
+        TextColumn::make('created_at')
           ->dateTime()
           ->sortable()
           ->toggleable(isToggledHiddenByDefault: true),
-        Tables\Columns\TextColumn::make('updated_at')
+        TextColumn::make('updated_at')
           ->dateTime()
           ->sortable()
           ->toggleable(isToggledHiddenByDefault: true),
       ])
+      ->defaultSort('name', 'asc')
       ->filters([
         //
       ])
