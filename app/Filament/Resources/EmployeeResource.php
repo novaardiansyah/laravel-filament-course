@@ -3,17 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\EmployeeResource\Pages;
-use App\Filament\Resources\EmployeeResource\RelationManagers;
+use Filament\Infolists\Components\Section AS InfolistSection;
 use App\Models\Employee;
 use Filament\Forms;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class EmployeeResource extends Resource
 {
@@ -105,7 +104,7 @@ class EmployeeResource extends Resource
         TextColumn::make('city.name')
           ->searchable()
           ->sortable()
-          ->toggleable(isToggledHiddenByDefault: false),
+          ->toggleable(isToggledHiddenByDefault: true),
         TextColumn::make('state.name')
           ->searchable()
           ->sortable()
@@ -146,6 +145,45 @@ class EmployeeResource extends Resource
       ]);
   }
 
+  public static function infolist(Infolist $infolist): Infolist
+  {
+    return $infolist
+      ->schema([
+        InfolistSection::make('Detail Employee')
+          ->description('Complete employee details')
+          ->schema([
+            TextEntry::make('first_name'),
+            TextEntry::make('middle_name'),
+            TextEntry::make('last_name'),
+            TextEntry::make('department.name')
+              ->label('Department'),
+            TextEntry::make('date_of_birth')
+              ->label('Date of Birth'),
+            TextEntry::make('date_of_hired')
+              ->label('Date of Hired'),
+            TextEntry::make('created_at')
+              ->label('Entry At'),
+            TextEntry::make('updated_at')
+              ->label('Last Updated'),
+          ])
+          ->columns(3),
+
+        InfolistSection::make('Detail Address')
+          ->description('Complete address details of the employee concerned.')
+          ->schema([
+            TextEntry::make('city.name')
+              ->label('City Name'),
+            TextEntry::make('state.name')
+              ->label('State Name'),
+            TextEntry::make('country.name')
+              ->label('Country Name'),
+            TextEntry::make('address'),
+            TextEntry::make('zip_code')
+          ])
+          ->columns(3)
+      ]);
+  }
+  
   public static function getRelations(): array
   {
     return [
@@ -156,10 +194,9 @@ class EmployeeResource extends Resource
   public static function getPages(): array
   {
     return [
-      'index' => Pages\ListEmployees::route('/'),
+      'index'  => Pages\ListEmployees::route('/'),
       'create' => Pages\CreateEmployee::route('/create'),
-      'view' => Pages\ViewEmployee::route('/{record}'),
-      'edit' => Pages\EditEmployee::route('/{record}/edit'),
+      'edit'   => Pages\EditEmployee::route('/{record}/edit'),
     ];
   }
 }
