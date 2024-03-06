@@ -6,13 +6,19 @@ use App\Filament\Resources\EmployeeResource\Pages;
 use Filament\Infolists\Components\Section AS InfolistSection;
 use App\Models\Employee;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 
 class EmployeeResource extends Resource
 {
@@ -132,8 +138,46 @@ class EmployeeResource extends Resource
           ->toggleable(isToggledHiddenByDefault: true),
       ])
       ->filters([
-        //
-      ])
+        SelectFilter::make('department')
+          ->searchable()
+          ->preload()
+          ->label('Filter by Department')
+          ->indicator('Department')
+          ->relationship(name: 'department', titleAttribute: 'name'),
+        Filter::make('created_at')
+          ->form([
+            DatePicker::make('created_from')
+              ->placeholder(Date('Y-m-d', strtotime('-1 year')))
+              ->native(false),
+            DatePicker::make('created_until')
+              ->placeholder(Date('Y-m-d', strtotime('+1 day')))
+              ->native(false)
+          ])
+          ->query(function (Builder $query, array $data): Builder {
+            return $query
+              ->when(
+                $data['created_from'],
+                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date)
+              )
+              ->when(
+                $data['created_until'],
+                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date)
+              );
+          })
+          ->indicateUsing(function (array $data): array {
+            $indicators = [];
+            if ($data['created_from'] ?? null) {
+              $indicators['created_form'] = 'Created from ' . Carbon::parse($data['created_from'])->format('F d, Y');
+            }
+            if ($data['created_until'] ?? null) {
+              $indicators['created_until'] = 'Created until ' . Carbon::parse($data['created_until'])->format('F d, Y');
+            }
+            return $indicators;
+          })
+          ->columnSpan(2)
+          ->columns(2)
+        ], layout: FiltersLayout::Modal)
+      ->filtersFormColumns(3)
       ->actions([
         Tables\Actions\ViewAction::make(),
         Tables\Actions\EditAction::make(),
