@@ -3,14 +3,18 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\EmployeeResource\Pages;
+use App\Models\City;
 use Filament\Infolists\Components\Section AS InfolistSection;
 use App\Models\Employee;
+use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -22,6 +26,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 class EmployeeResource extends Resource
 {
@@ -41,16 +46,25 @@ class EmployeeResource extends Resource
               ->relationship(name: 'country', titleAttribute: 'name')
               ->searchable()
               ->preload()
-              ->required(),
+              ->live()
+              ->required()
+              ->afterStateUpdated(function (Set $set) {
+                $set('state_id', null);
+                $set('city_id', null);
+              }),
             Select::make('state_id')
-              ->relationship(name: 'state', titleAttribute: 'name')
+              ->label('State')
+              ->options(fn(Get $get): Collection => State::where('country_id', $get('country_id'))->get()->pluck('name', 'id'))
               ->searchable()
-              // ->preload()
-              ->required(),
+              ->required()
+              ->live()
+              ->afterStateUpdated(function (Set $set) {
+                $set('city_id', null);
+              }),
             Select::make('city_id')
-              ->relationship(name: 'city', titleAttribute: 'name')
+              ->label('City')
+              ->options(fn(Get $get): Collection => City::where('state_id', $get('state_id'))->get()->pluck('name', 'id'))
               ->searchable()
-              // ->preload()
               ->required(),
             Select::make('department_id')
               ->relationship(name: 'department', titleAttribute: 'name')
