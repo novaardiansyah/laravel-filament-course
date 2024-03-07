@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CountryResource\Pages;
 use App\Filament\Resources\CountryResource\RelationManagers;
+use App\Filament\Resources\CountryResource\RelationManagers\EmployeesRelationManager;
+use App\Filament\Resources\CountryResource\RelationManagers\StatesRelationManager;
 use App\Models\Country;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -38,7 +40,8 @@ class CountryResource extends Resource
           ->required()
           ->numeric()
           ->maxLength(5),
-      ]);
+      ])
+      ->columns(3);
   }
 
   public static function table(Table $table): Table
@@ -76,7 +79,8 @@ class CountryResource extends Resource
   public static function getRelations(): array
   {
     return [
-      //
+      StatesRelationManager::class,
+      EmployeesRelationManager::class
     ];
   }
 
