@@ -7,6 +7,9 @@ use Filament\Infolists\Components\Section AS InfolistSection;
 use App\Models\Employee;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
@@ -31,63 +34,72 @@ class EmployeeResource extends Resource
   {
     return $form
       ->schema([
-        Forms\Components\Section::make('Address')
+        Section::make('Address')
           ->description('Please enter the complete address for the employee.')
           ->schema([
-            Forms\Components\Select::make('country_id')
+            Select::make('country_id')
               ->relationship(name: 'country', titleAttribute: 'name')
               ->searchable()
               ->preload()
               ->required(),
-            Forms\Components\Select::make('state_id')
+            Select::make('state_id')
               ->relationship(name: 'state', titleAttribute: 'name')
               ->searchable()
               // ->preload()
               ->required(),
-            Forms\Components\Select::make('city_id')
+            Select::make('city_id')
               ->relationship(name: 'city', titleAttribute: 'name')
               ->searchable()
               // ->preload()
               ->required(),
-            Forms\Components\Select::make('department_id')
+            Select::make('department_id')
               ->relationship(name: 'department', titleAttribute: 'name')
               ->searchable()
               ->preload()
               ->required(),
-          ])->columns(2),
-        Forms\Components\Section::make('User Name')
+          ])
+          ->columns(2),
+
+        Section::make('User Name')
           ->description('Put the user name details in.')
           ->schema([
-            Forms\Components\TextInput::make('first_name')
+            TextInput::make('first_name')
               ->required()
               ->maxLength(255),
-            Forms\Components\TextInput::make('last_name')
+            TextInput::make('last_name')
               ->required()
               ->maxLength(255),
-            Forms\Components\TextInput::make('middle_name')
+            TextInput::make('middle_name')
               ->required()
               ->maxLength(255),
-          ])->columns(3),
-        Forms\Components\Section::make('User Address')
-            ->schema([
-              Forms\Components\TextInput::make('address')
-                ->required()
-                ->maxLength(255),
-              Forms\Components\TextInput::make('zip_code')
-                ->required()
-                ->maxLength(255),
-            ])->columns(2),
-        Forms\Components\Section::make('Dates')
+          ])
+          ->columns(3),
+
+        Section::make('User Address')
+          ->description('Put the user address details in.')
           ->schema([
-            Forms\Components\DatePicker::make('date_of_birth')
+            TextInput::make('address')
+              ->required()
+              ->maxLength(255),
+            TextInput::make('zip_code')
+              ->required()
+              ->maxLength(255),
+          ])
+          ->columns(2),
+
+        Section::make('Dates')
+          ->description('Please enter the dates for the employee.')
+          ->schema([
+            DatePicker::make('date_of_birth')
               ->displayFormat('Y/m/d')
               ->native(false)
               ->required(),
-            Forms\Components\DatePicker::make('date_of_hired')
+            DatePicker::make('date_of_hired')
               ->displayFormat('Y/m/d')
               ->native(false)
               ->required(),
-          ])->columns(2)
+          ])
+          ->columns(2)
       ]);
   }
 
