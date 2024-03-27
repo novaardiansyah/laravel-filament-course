@@ -17,6 +17,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -232,6 +233,14 @@ class EmployeeResource extends Resource
       ->actions([
         Tables\Actions\ViewAction::make(),
         Tables\Actions\EditAction::make(),
+        Tables\Actions\DeleteAction::make()
+          // ->successNotificationTitle('Employee deleted successfully')
+          ->successNotification(
+            Notification::make()
+            ->success()
+            ->title('Empleyee deleted.')
+            ->body('The employee was deleted successfully')
+          )
       ])
       ->bulkActions([
         Tables\Actions\BulkActionGroup::make([
